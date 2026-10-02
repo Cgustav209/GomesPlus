@@ -1,16 +1,19 @@
-import Emblema from "./Emplema";
+import Emblema from "./Emblema";
 import Botao from "./Botao";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import titulo from "./Titulo";
 
 export default function CartaoFilme({ poster, titulo, genero, ano, onPress }) {
   return (
     <View style={styles.cartao}>
-      <Text style={styles.poster}>{poster}</Text>
+      <Image style={styles.poster} source={{ uri: poster }} />
       <View style={styles.info}>
-        <Text style={styles.titulo}>{titulo}</Text>
-        <Text style={styles.ano}>{ano}</Text>
-        <Emblema style={styles.genero} categoria={genero} />
+        <View>
+          <Text style={styles.titulo}>{titulo}</Text>
+          <Text style={styles.ano}>{ano}</Text>
+        </View>
+
+        <Emblema categoria={genero} />
         <Botao titulo="Ver detalhes" onPress={onPress} />
       </View>
     </View>
@@ -28,21 +31,24 @@ const styles = StyleSheet.create({
   },
 
   poster: {
-    fontSize: 80,
+    width: 120,
+    height: 180,
+    borderRadius: 8,
+  },
+  info: {
+    flex: 1,
+    justifyContent: "space-between",
   },
 
   titulo: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "700",
     color: "#ffff",
+    marginTop: 12,
   },
   ano: {
     fontSize: 12,
     color: "#cace00ff",
     marginBottom: 6,
-  },
-  genero: {
-    fontSize: 12,
-    color: "#cace00ff",
   },
 });

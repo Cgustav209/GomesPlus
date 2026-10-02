@@ -1,16 +1,26 @@
-import React from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  Image,
+} from "react-native";
+
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import CartaoFilme from "./components/CartaoFilme";
-import { useState } from "react";
-import Titulo from "./components/Titulo";
-import { TouchableOpacity } from "react-native";
+// Estilos
+import { styles } from "./src/theme/styles/styles";
+// Componentes
+import ModalDetalhes from "./src/components/ModalDetalhes";
+import CartaoFilme from "./src/components/CartaoFilme";
+import Titulo from "./src/components/Titulo";
 
 const catalogo = [
   {
     id: 1,
     categoria: "filme",
-    poster: "🚀",
+    poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
     titulo: "Interestelar",
     genero: "Ficção Científica",
     ano: 2014,
@@ -20,9 +30,9 @@ const catalogo = [
   {
     id: 2,
     categoria: "filme",
-    poster: "🏠",
+    poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
     titulo: "Parasita",
-    genero: "Thriller",
+    genero: "Suspense / Drama",
     ano: 2019,
     sinopse:
       "Uma família pobre se infiltra na vida de uma família rica, com consequências imprevisíveis.",
@@ -30,7 +40,7 @@ const catalogo = [
   {
     id: 3,
     categoria: "filme",
-    poster: "🏜️",
+    poster: "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
     titulo: "Duna",
     genero: "Ficção Científica",
     ano: 2021,
@@ -40,7 +50,7 @@ const catalogo = [
   {
     id: 4,
     categoria: "filme",
-    poster: "🪄",
+    poster: "https://image.tmdb.org/t/p/w500/wM0aX5L1i4oO6oE3RzW1r93F2B.jpg",
     titulo: "Harry Potter",
     genero: "Fantasia / Aventura",
     ano: 2001,
@@ -50,7 +60,7 @@ const catalogo = [
   {
     id: 5,
     categoria: "filme",
-    poster: "💍",
+    poster: "https://image.tmdb.org/t/p/w500/98t7yFqFUKXwI2uGq7H2b8d54w2.jpg",
     titulo: "Senhor dos Anéis",
     genero: "Fantasia / Aventura",
     ano: 2001,
@@ -60,7 +70,7 @@ const catalogo = [
   {
     id: 6,
     categoria: "serie",
-    poster: "🧪",
+    poster: "https://image.tmdb.org/t/p/w500/3xnWa9f4Gl0G8n6xO1zHRhEKZz2.jpg",
     titulo: "Breaking Bad",
     genero: "Drama / Crime",
     ano: 2008,
@@ -70,7 +80,7 @@ const catalogo = [
   {
     id: 7,
     categoria: "serie",
-    poster: "🔦",
+    poster: "https://image.tmdb.org/t/p/w500/uF63AOWt5d4d3LhB8Lh8b4h4yHj.jpg",
     titulo: "Stranger Things",
     genero: "Ficção Científica",
     ano: 2016,
@@ -80,7 +90,7 @@ const catalogo = [
   {
     id: 8,
     categoria: "anime",
-    poster: "⚔️",
+    poster: "https://image.tmdb.org/t/p/w500/hTP1DtLGFamjTEXpNtaEpUmVyhM.jpg",
     titulo: "Attack on Titan",
     genero: "Ação / Drama",
     ano: 2013,
@@ -90,7 +100,7 @@ const catalogo = [
   {
     id: 9,
     categoria: "anime",
-    poster: "📓",
+    poster: "https://image.tmdb.org/t/p/w500/tCpeRkS0b6k1Hj2pPibCmvXU5w4.jpg",
     titulo: "Death Note",
     genero: "Thriller Psicológico",
     ano: 2006,
@@ -100,7 +110,7 @@ const catalogo = [
   {
     id: 10,
     categoria: "anime",
-    poster: "🍥",
+    poster: "https://image.tmdb.org/t/p/w500/x31xi43xZl9KqXk9G4AUMuB36P.jpg",
     titulo: "Naruto",
     genero: "Ação / Aventura",
     ano: 2002,
@@ -110,7 +120,7 @@ const catalogo = [
   {
     id: 11,
     categoria: "anime",
-    poster: "🐉",
+    poster: "https://image.tmdb.org/t/p/w500/409k5lP84T8J2Zk7x3l67n5Yl7y.jpg",
     titulo: "Dragon Ball",
     genero: "Ação / Artes Marciais",
     ano: 1986,
@@ -140,7 +150,10 @@ export default function App() {
       // o Spread (. . .)  envia as informacoes do filme como props para o CartaoFilme, ou seja, poster, titulo, genero, ano e sinopse
       {...filme}
       //quando o usuario clicar no botao "Ver detalhes" do CartaoFilme, a funcao onPress vai ser chamada e vai atualizar o estado filmeSelecionado com o filme clicado, ou seja, o filme selecionado vai ser exibido na tela de detalhes
-      onPress={() => setFilmeSelecionado(filme)}
+      onPress={() => {
+        console.log(filme.titulo, "Selecionado");
+        setFilmeSelecionado(filme);
+      }}
     />
   );
 
@@ -149,13 +162,13 @@ export default function App() {
       <StatusBar style="light" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.logo}>GomesPlus</Text>
+        <Text style={styles.logo}>GomesPlus+</Text>
         <View style={styles.filtroContainer}>
           {[
-            { key: "todos", label: "todos" },
-            { key: "filme", label: "filmes" },
-            { key: "serie", label: "series" },
-            { key: "anime", label: "animes" },
+            { key: "todos", label: "Todos" },
+            { key: "filme", label: "Filmes" },
+            { key: "serie", label: "Series" },
+            { key: "anime", label: "Animes" },
           ].map((filtro) => (
             <TouchableOpacity
               key={filtro.key}
@@ -206,51 +219,11 @@ export default function App() {
           </>
         )}
       </ScrollView>
+      {/* MODAL DE DETALHES */}
+      <ModalDetalhes
+        filme={filmeSelecionado}
+        onClose={() => setFilmeSelecionado(null)}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0B0C10",
-    justifyContent: "center",
-    paddingTop: 56,
-    paddingHorizontal: 20,
-  },
-
-  logo: {
-    fontSize: 28,
-    fontWeight: 900,
-    letterSpacing: -1,
-    color: "#cace00ff",
-    marginBottom: 24,
-  },
-
-  filtroContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 20,
-  },
-
-  filtroBotao: {
-    backgroundColor: "#cace00ff",
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 999,
-    marginRight: 10,
-    marginBottom: 10,
-  },
-
-  filtroBotaoAtivo: {
-    backgroundColor: "#916300ff",
-  },
-
-  filtroTexto: {
-    color: "#000000ff",
-  },
-
-  filtroTextoAtivo: {
-    color: "#cace00ff",
-  },
-});
